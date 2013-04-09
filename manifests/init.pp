@@ -206,6 +206,7 @@ class supervisor(
     ensure     => $service_ensure_real,
     enable     => $service_enable,
     hasrestart => true,
+    restart    => '/etc/init.d/supervisor stop && while /usr/bin/test -n "`ps auwwwxx | grep supervisord | grep -v grep`"; do sleep .1; done && /etc/init.d/supervisor start',
     require    => File[$supervisor::params::conf_file],
   }
 }
