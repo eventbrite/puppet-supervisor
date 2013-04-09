@@ -11,7 +11,8 @@
 #  }
 #
 define supervisor::service (
-  $command,
+  $command                  = undef,
+  $source                   = undef,
   $ensure                   = 'present',
   $numprocs                 = 1,
   $numprocs_start           = 0,
@@ -37,6 +38,11 @@ define supervisor::service (
   $environment              = undef,
   $umask                    = undef
 ) {
+
+  if not $command and not $source {
+    fail("must define `command` or `source` for service: ${name}")
+  }
+
   include supervisor
 
   case $ensure {
@@ -89,9 +95,16 @@ define supervisor::service (
 
   $conf_file = "${supervisor::conf_dir}/${name}${supervisor::conf_ext}"
 
-  file { $conf_file:
-    ensure  => $config_ensure,
-    content => template('supervisor/service.ini.erb'),
+  if $source {
+    file { $conf_file:
+      ensure => $config_ensure,
+      source => $source,
+    }
+  else {
+    file { $conf_file:
+      ensure => $config_ensure,
+      content => template('supervisor/service.ini.erb'),
+    }
   }
 
   service { "supervisor::${name}":
