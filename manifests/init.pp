@@ -128,7 +128,8 @@ class supervisor(
   $recurse_config_dir       = false,
   $conf_dir                 = $supervisor::params::conf_dir,
   $conf_ext                 = $supervisor::params::conf_ext,
-  $include_files            = []
+  $include_files            = [],
+  $include_bash_completion  = true
 ) inherits supervisor::params {
 
   include supervisor::update
@@ -208,5 +209,15 @@ class supervisor(
     hasrestart => true,
     restart    => '/etc/init.d/supervisor stop && while /usr/bin/test -n "`ps auwwwxx | grep supervisord | grep -v grep`"; do sleep .1; done && /etc/init.d/supervisor start',
     require    => File[$supervisor::params::conf_file],
+  }
+
+  if $include_bash_completion {
+
+    file { '/etc/bash_completion.d/supervisorctl':
+      ensure  => present,
+      source  => 'puppet:///modules/supervisor/etc/bash_completion.d/supervisorctl',
+      require => Package[$supervisor::params::package],
+    }
+
   }
 }
