@@ -17,7 +17,7 @@ _supervisor()
     #  Complete the arguments to some of the basic commands.
     #
     case "${prev}" in
-        start|stop|restart)
+        start|status|stop|restart)
             local processes=$(for x in `sudo supervisorctl avail | awk '{print $1}'`; do echo ${x} ; done )
             COMPREPLY=( $(compgen -W "${processes}" -- ${cur}) )
             return 0
