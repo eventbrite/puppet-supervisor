@@ -129,7 +129,7 @@ class supervisor(
   $conf_dir                 = $supervisor::params::conf_dir,
   $conf_ext                 = $supervisor::params::conf_ext,
   $include_files            = [],
-  $include_bash_completion  = true
+  $bash_completion          = false
 ) inherits supervisor::params {
 
   include supervisor::update
@@ -211,7 +211,7 @@ class supervisor(
     require    => File[$supervisor::params::conf_file],
   }
 
-  if $include_bash_completion {
+  if $bash_completion {
 
     file { '/etc/bash_completion.d/supervisorctl':
       ensure  => present,
