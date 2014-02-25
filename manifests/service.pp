@@ -39,7 +39,7 @@ define supervisor::service (
   $umask                    = undef
 ) {
 
-  if not $command and not $source {
+  if $command == undef and $source == undef {
     fail("must define `command` or `source` for service: ${name}")
   }
 
@@ -100,7 +100,7 @@ define supervisor::service (
       ensure => $config_ensure,
       source => $source,
     }
-  else {
+  } else {
     file { $conf_file:
       ensure => $config_ensure,
       content => template('supervisor/service.ini.erb'),

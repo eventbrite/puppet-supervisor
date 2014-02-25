@@ -56,6 +56,24 @@ describe 'supervisor::service' do
     end
   end
 
+  context "with empty `command` and `source`" do
+    let (:params) { {} }
+
+    it "should fail" do
+      expect { subject.call() }.to raise_error(Puppet::Error)
+    end
+  end
+
+  context "with source => somecontent" do
+    let (:params) { {
+      :source => 'somecontent',
+    } }
+
+    it "should create /etc/supervisor/sometitle.ini" do
+      should create_file('/etc/supervisor/sometitle.ini')
+    end
+  end
+
   context "with ensure => stopped" do
     let (:params) { {
       :command => 'somecommand',
